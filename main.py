@@ -5,7 +5,6 @@ pip.main(['install', 'python-telegram-bot'])
 
 import os
 import pandas
-import random
 import dotenv
 import logging
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
