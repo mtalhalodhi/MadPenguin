@@ -1,4 +1,4 @@
-# Made Penguin
+# Mad Penguin
 Generic Telegram Bot
 
 # Setup
