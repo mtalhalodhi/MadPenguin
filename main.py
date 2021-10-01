@@ -1,9 +1,14 @@
 import os
+import pip
 import pandas
 import random
 import dotenv
 import logging
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
+
+pip.main(['install', 'pandas'])
+pip.main(['install', 'python-dotenv'])
+pip.main(['install', 'python-telegram-bot'])
 
 dotenv.load_dotenv()
 
