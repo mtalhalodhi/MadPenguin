@@ -12,7 +12,7 @@ https://core.telegram.org/bots#3-how-do-i-create-a-bot
 
 ## Python
 Add the following modules:
-```bash
+```console
 pip install pandas
 pip install python-dotenv
 pip install python-telegram-bot --upgrade
@@ -22,6 +22,6 @@ pip install python-telegram-bot --upgrade
 
 To run the bot, simply run `main.py`
 
-```bash
+```console
 python main.py 
 ```
