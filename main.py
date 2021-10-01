@@ -1,10 +1,11 @@
+import os
 import pandas
 import random
 import dotenv
 import logging
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 
-load_dotenv()
+dotenv.load_dotenv()
 
 updater = Updater(token=os.getenv('BOT_TOKEN'), use_context=True, request_kwargs={
     #'proxy_url': 'http://196.1.95.117:80/',
