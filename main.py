@@ -13,7 +13,10 @@ import cuss
 
 def main():
     dotenv.load_dotenv()
-    updater = Updater(token=os.getenv('BOT_TOKEN'), use_context=True, request_kwargs={
+    bot_token = os.getenv('BOT_TOKEN')
+    if not bot_token:
+        bot_token=os.environ.get('PENGUIN_TELEGRAM_KEY', None)
+    updater = Updater(token=bot_token, use_context=True, request_kwargs={
         #'proxy_url': 'http://196.1.95.117:80/',
     })
     dispatcher = updater.dispatcher
