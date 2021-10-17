@@ -1,13 +1,12 @@
 import pip
-pip.main(['install', 'pandas'])
-pip.main(['install', 'python-dotenv'])
-pip.main(['install', 'python-telegram-bot'])
 
 import os
 import pandas
 import dotenv
 import logging
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
+import gspread
+from oauth2client.service_account import ServiceAccountCredentials
 
 import cuss
 
@@ -21,6 +20,12 @@ def main():
     })
     dispatcher = updater.dispatcher
     logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
+
+    scope = ['https://www.googleapis.com/auth/spreadsheets']
+    creds = ServiceAccountCredentials.from_json_keyfile_name('creds.json', scope)
+    client = gspread.authorize(creds)
+
+    sheet = client.open('')
     
     def start(update, context):
         context.bot.send_message(chat_id=update.effective_chat.id, text="THE MAD PENGUIN IS ALIVE!!!")
