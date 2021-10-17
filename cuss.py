@@ -1,6 +1,5 @@
 import pandas
 import random
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 
 def random_curse():
     cusses_csv = pandas.read_csv('cusses.csv')

@@ -9,6 +9,7 @@ import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 
 import cuss
+import consumption
 
 def main():
     dotenv.load_dotenv()
@@ -21,12 +22,6 @@ def main():
     dispatcher = updater.dispatcher
     logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 
-    scope = ['https://www.googleapis.com/auth/spreadsheets']
-    creds = ServiceAccountCredentials.from_json_keyfile_name('creds.json', scope)
-    client = gspread.authorize(creds)
-
-    sheet = client.open('')
-    
     def start(update, context):
         context.bot.send_message(chat_id=update.effective_chat.id, text="THE MAD PENGUIN IS ALIVE!!!")
     start_handler = CommandHandler('start', start)
@@ -34,6 +29,9 @@ def main():
 
     cuss_handler = CommandHandler('cuss', cuss.cuss)
     dispatcher.add_handler(cuss_handler)
+
+    sheet_handler = CommandHandler('unseen', consumption.handle)
+    dispatcher.add_handler(sheet_handler)
 
     updater.start_polling()
 main()
