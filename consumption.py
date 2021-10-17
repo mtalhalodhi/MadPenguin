@@ -30,18 +30,18 @@ def generate_google_creds_dict():
         "auth_provider_x509_cert_url": os.getenv("SHEET_AUTH_PROVIDER_X509_CERT_URL"),
         "client_x509_cert_url": os.getenv("SHEET_CLIENT_X509_CERT_URL")
     }
-    if (variables_keys['type']) == None: # This is a check to see if it's on Heroku or not
+    if not variables_keys['type']: # This is a check to see if it's on Heroku or not
         variables_keys = {
-            "type": os.environ.get("SHEET_TYPE"),
-            "project_id": os.environ.get("SHEET_PROJECT_ID"),
-            "private_key_id": os.environ.get("SHEET_PRIVATE_KEY_ID"),
-            "private_key": os.environ.get("SHEET_PRIVATE_KEY"),
-            "client_email": os.environ.get("SHEET_CLIENT_EMAIL"),
-            "client_id": os.environ.get("SHEET_CLIENT_ID"),
-            "auth_uri": os.environ.get("SHEET_AUTH_URI"),
-            "token_uri": os.environ.get("SHEET_TOKEN_URI"),
-            "auth_provider_x509_cert_url": os.environ.get("SHEET_AUTH_PROVIDER_X509_CERT_URL"),
-            "client_x509_cert_url": os.environ.get("SHEET_CLIENT_X509_CERT_URL")
+            "type": os.environ.get("SHEET_TYPE", None),
+            "project_id": os.environ.get("SHEET_PROJECT_ID", None),
+            "private_key_id": os.environ.get("SHEET_PRIVATE_KEY_ID", None),
+            "private_key": os.environ.get("SHEET_PRIVATE_KEY", None),
+            "client_email": os.environ.get("SHEET_CLIENT_EMAIL", None),
+            "client_id": os.environ.get("SHEET_CLIENT_ID", None),
+            "auth_uri": os.environ.get("SHEET_AUTH_URI", None),
+            "token_uri": os.environ.get("SHEET_TOKEN_URI", None),
+            "auth_provider_x509_cert_url": os.environ.get("SHEET_AUTH_PROVIDER_X509_CERT_URL", None),
+            "client_x509_cert_url": os.environ.get("SHEET_CLIENT_X509_CERT_URL", None)
         }
     return variables_keys
 
