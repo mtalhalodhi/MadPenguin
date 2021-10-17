@@ -19,29 +19,29 @@ def get_unseen_by_user(telegram_username):
 
 def generate_google_creds_dict():
     variables_keys = {
-        "type": os.getenv("SHEET_TYPE"),
-        "project_id": os.getenv("SHEET_PROJECT_ID"),
-        "private_key_id": os.getenv("SHEET_PRIVATE_KEY_ID"),
-        "private_key": os.getenv("SHEET_PRIVATE_KEY"),
-        "client_email": os.getenv("SHEET_CLIENT_EMAIL"),
-        "client_id": os.getenv("SHEET_CLIENT_ID"),
-        "auth_uri": os.getenv("SHEET_AUTH_URI"),
-        "token_uri": os.getenv("SHEET_TOKEN_URI"),
-        "auth_provider_x509_cert_url": os.getenv("SHEET_AUTH_PROVIDER_X509_CERT_URL"),
-        "client_x509_cert_url": os.getenv("SHEET_CLIENT_X509_CERT_URL")
+        "type": os.getenv('SHEET_TYPE'),
+        "project_id": os.getenv('SHEET_PROJECT_ID'),
+        "private_key_id": os.getenv('SHEET_PRIVATE_KEY_ID'),
+        "private_key": os.getenv('SHEET_PRIVATE_KEY'),
+        "client_email": os.getenv('SHEET_CLIENT_EMAIL'),
+        "client_id": os.getenv('SHEET_CLIENT_ID'),
+        "auth_uri": os.getenv('SHEET_AUTH_URI'),
+        "token_uri": os.getenv('SHEET_TOKEN_URI'),
+        "auth_provider_x509_cert_url": os.getenv('SHEET_AUTH_PROVIDER_X509_CERT_URL'),
+        "client_x509_cert_url": os.getenv('SHEET_CLIENT_X509_CERT_URL')
     }
     if not os.getenv("SHEET_TYPE"): # This is a check to see if it's on Heroku or not
         return {
-            "type": os.environ.get("SHEET_TYPE", None),
-            "project_id": os.environ.get("SHEET_PROJECT_ID", None),
-            "private_key_id": os.environ.get("SHEET_PRIVATE_KEY_ID", None),
-            "private_key": os.environ.get("SHEET_PRIVATE_KEY", None),
-            "client_email": os.environ.get("SHEET_CLIENT_EMAIL", None),
-            "client_id": os.environ.get("SHEET_CLIENT_ID", None),
-            "auth_uri": os.environ.get("SHEET_AUTH_URI", None),
-            "token_uri": os.environ.get("SHEET_TOKEN_URI", None),
-            "auth_provider_x509_cert_url": os.environ.get("SHEET_AUTH_PROVIDER_X509_CERT_URL", None),
-            "client_x509_cert_url": os.environ.get("SHEET_CLIENT_X509_CERT_URL", None)
+            "type": os.environ.get('SHEET_TYPE', None),
+            "project_id": os.environ.get('SHEET_PROJECT_ID', None),
+            "private_key_id": os.environ.get('SHEET_PRIVATE_KEY_ID', None),
+            "private_key": os.environ.get('SHEET_PRIVATE_KEY', None),
+            "client_email": os.environ.get('SHEET_CLIENT_EMAIL', None),
+            "client_id": os.environ.get('SHEET_CLIENT_ID', None),
+            "auth_uri": os.environ.get('SHEET_AUTH_URI', None),
+            "token_uri": os.environ.get('SHEET_TOKEN_URI', None),
+            "auth_provider_x509_cert_url": os.environ.get('SHEET_AUTH_PROVIDER_X509_CERT_URL', None),
+            "client_x509_cert_url": os.environ.get('SHEET_CLIENT_X509_CERT_URL', None)
         }
     return variables_keys
 
