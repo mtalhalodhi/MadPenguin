@@ -30,9 +30,8 @@ def generate_google_creds_dict():
         "auth_provider_x509_cert_url": os.getenv("SHEET_AUTH_PROVIDER_X509_CERT_URL"),
         "client_x509_cert_url": os.getenv("SHEET_CLIENT_X509_CERT_URL")
     }
-    if not variables_keys['type']: # This is a check to see if it's on Heroku or not
-        print("In Heroku so gettings envs from Heroku")
-        variables_keys = {
+    if not os.get_env("SHEET_TYPE"): # This is a check to see if it's on Heroku or not
+        return {
             "type": os.environ.get("SHEET_TYPE", None),
             "project_id": os.environ.get("SHEET_PROJECT_ID", None),
             "private_key_id": os.environ.get("SHEET_PRIVATE_KEY_ID", None),
