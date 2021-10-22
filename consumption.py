@@ -63,3 +63,11 @@ def get_key_for_spreadsheet():
 def handle(update, context):
     relevant_shows_to_user = get_unseen_by_user(update.message.from_user['username'])
     context.bot.send_message(chat_id=update.effective_chat.id, text=relevant_shows_to_user, parse_mode=telegram.ParseMode.HTML)
+
+def handle_update(update, context):
+    scope = ['https://www.googleapis.com/auth/spreadsheets', 'https://www.googleapis.com/auth/drive']
+    creds = ServiceAccountCredentials.from_json_keyfile_dict(generate_google_creds_dict(), scope)
+    client = gspread.authorize(creds)
+    shows_list_worksheet = client.open_by_key(get_key_for_spreadsheet()).worksheet("Consumption Queue")
+    shows_list_worksheet.update('A37', 'Boobas')
+    context.bot.send_message(chat_id=update.effective_chat.id, text="Its in")

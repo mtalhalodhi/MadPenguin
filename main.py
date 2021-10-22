@@ -32,6 +32,9 @@ def main():
 
     sheet_handler = CommandHandler('unseen', consumption.handle)
     dispatcher.add_handler(sheet_handler)
+    
+    sheet_handler_update = CommandHandler('insert', consumption.handle_update)
+    dispatcher.add_handler(sheet_handler_update)
 
     updater.start_polling()
 main()
