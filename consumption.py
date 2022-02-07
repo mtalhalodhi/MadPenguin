@@ -45,7 +45,6 @@ def generate_google_creds_dict():
         }
     return variables_keys
 
-    
 def get_name_by_telegram_user(telegram_username, client):
     user_mapping_worksheet =  client.open_by_key(get_key_for_spreadsheet()).worksheet("Telegram Mapping")
     filtered_name_dict = filter(lambda user_json : (user_json['username'] == telegram_username), user_mapping_worksheet.get_all_records())
