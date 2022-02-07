@@ -10,6 +10,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 
 import cuss
 import consumption
+import own
 
 def main():
     dotenv.load_dotenv()
@@ -32,6 +33,9 @@ def main():
 
     sheet_handler = CommandHandler('unseen', consumption.handle)
     dispatcher.add_handler(sheet_handler)
+
+    own_handler = CommandHandler('own', own.own_bot_command)
+    dispatcher.add_handler(own_handler)
 
     updater.start_polling()
 main()
