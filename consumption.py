@@ -2,20 +2,36 @@ import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 import telegram
 import os
+import cuss
 
-def get_unseen_by_user(telegram_username):
+def get_value_by_user(telegram_username, value):
     scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
     creds = ServiceAccountCredentials.from_json_keyfile_dict(generate_google_creds_dict(), scope)
     client = gspread.authorize(creds)
     name_on_sheet = get_name_by_telegram_user(telegram_username, client)
 
     shows_list_worksheet = client.open_by_key(get_key_for_spreadsheet()).worksheet("Consumption Queue")
-    filtered_records = list(filter(lambda record : (record[name_on_sheet] == "No"),shows_list_worksheet.get_all_records()))
+    filtered_records = list(filter(lambda record : (record[name_on_sheet] == value),shows_list_worksheet.get_all_records()))
 
     unseen_telegram_message = ""
     for filtered_json in filtered_records:
         unseen_telegram_message += record_to_message_format(filtered_json)
     return unseen_telegram_message
+
+def update_user_entry_to_new_value(telegram_username, entry_name, new_value):
+    scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
+    creds = ServiceAccountCredentials.from_json_keyfile_dict(generate_google_creds_dict(), scope)
+    client = gspread.authorize(creds)
+    name_on_sheet = get_name_by_telegram_user(telegram_username, client)
+
+    shows_list_worksheet = client.open_by_key(get_key_for_spreadsheet()).worksheet("Consumption Queue")
+    cell_with_entry_name = shows_list_worksheet.find(entry_name)
+    user_col = shows_list_worksheet.find(name_on_sheet).col
+
+    if cell_with_entry_name:
+        shows_list_worksheet.update_cell(cell_with_entry_name.row, user_col, new_value)
+
+    return cell_with_entry_name
 
 def generate_google_creds_dict():
     variables_keys = {
@@ -59,6 +75,47 @@ def get_key_for_spreadsheet():
         key=os.environ.get('SPREADSHEET_KEY', None)
     return key
 
-def handle(update, context):
-    relevant_shows_to_user = get_unseen_by_user(update.message.from_user['username'])
+def handle_unseen(update, context):
+    relevant_shows_to_user = get_value_by_user(update.message.from_user['username'], "No")
+    context.bot.send_message(chat_id=update.effective_chat.id, text=relevant_shows_to_user, parse_mode=telegram.ParseMode.HTML)
+
+def handle_seen(update, context):
+    entry_name = ""
+    if (len(context.args) > 0):
+        entry_name += " ".join(context.args)
+    telegram_user = update.message.from_user['username']
+    if (update_user_entry_to_new_value(telegram_username=telegram_user, entry_name=entry_name, new_value="Yes")):
+        context.bot.send_message(chat_id=update.effective_chat.id, text="I updated it, be grateful", parse_mode=telegram.ParseMode.HTML)
+    else:
+        context.bot.send_message(chat_id=update.effective_chat.id, text="Wow you suck, I couldn't find: {}, prepare to be cussed!".format(entry_name), parse_mode=telegram.ParseMode.HTML)
+        context.args = list(telegram_user)
+        cuss.cuss(update, context)
+
+def handle_not_interested(update, context):
+    entry_name = ""
+    if (len(context.args) > 0):
+        entry_name += " ".join(context.args)
+    telegram_user = update.message.from_user['username']
+    if (update_user_entry_to_new_value(telegram_username=telegram_user, entry_name=entry_name, new_value="Not Interested")):
+        context.bot.send_message(chat_id=update.effective_chat.id, text="I updated it, be grateful", parse_mode=telegram.ParseMode.HTML)
+    else:
+        context.bot.send_message(chat_id=update.effective_chat.id, text="Wow you suck, I couldn't find: {}, prepare to be cussed!".format(entry_name), parse_mode=telegram.ParseMode.HTML)
+        context.args = list(telegram_user)
+        cuss.cuss(update, context)
+
+
+def handle_in_progress(update, context):
+    entry_name = ""
+    if (len(context.args) > 0):
+        entry_name += " ".join(context.args)
+    telegram_user = update.message.from_user['username']
+    if (update_user_entry_to_new_value(telegram_username=telegram_user, entry_name=entry_name, new_value="In Progress")):
+        context.bot.send_message(chat_id=update.effective_chat.id, text="I updated it, be grateful", parse_mode=telegram.ParseMode.HTML)
+    else:
+        context.bot.send_message(chat_id=update.effective_chat.id, text="Wow you suck, I couldn't find: {}, prepare to be cussed!".format(entry_name), parse_mode=telegram.ParseMode.HTML)
+        context.args = list(telegram_user)
+        cuss.cuss(update, context)
+
+def handle_my_progress(update, context):
+    relevant_shows_to_user = get_value_by_user(update.message.from_user['username'], "In Progress")
     context.bot.send_message(chat_id=update.effective_chat.id, text=relevant_shows_to_user, parse_mode=telegram.ParseMode.HTML)
