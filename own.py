@@ -4,8 +4,8 @@ import random
 
 def random_own():
     csv = pandas.read_csv('owns.csv')
-    own = random.randint(0, len(csv['owns']) - 1)
-    return own
+    i = random.randint(0, len(csv['owns']) - 1)
+    return csv["owns"][i]
 
 
 def own(a, b):
