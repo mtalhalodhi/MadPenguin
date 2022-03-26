@@ -116,6 +116,28 @@ def handle_in_progress(update, context):
         context.args = list(telegram_user)
         cuss.cuss(update, context)
 
+def add_content_to_spreadsheet(content_title, content_type, telegram_username, status):
+    scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
+    creds = ServiceAccountCredentials.from_json_keyfile_dict(generate_google_creds_dict(), scope)
+    client = gspread.authorize(creds)
+    name_on_sheet = get_name_by_telegram_user(telegram_username, client)
+    suitable_content_types = ["Movie", "Series", "Anime", "Novel", "Game", "Manga"]
+    if (content_type not in suitable_content_types):
+        return
+
+    shows_list_worksheet = client.open_by_key(get_key_for_spreadsheet()).worksheet("Consumption Queue")
+    shows_list_worksheet.append_row([content_title, content_type, name_on_sheet, status, status, "No", "No", "No", "No"])
+
+
 def handle_my_progress(update, context):
     relevant_shows_to_user = get_value_by_user(update.message.from_user['username'], "In Progress")
     context.bot.send_message(chat_id=update.effective_chat.id, text=relevant_shows_to_user, parse_mode=telegram.ParseMode.HTML)
+
+def handle_add_content(update, context):
+    if (len(context.args) < 2):
+        context.bot.send_message(chat_id=update.effective_chat.id, text="You need to provide a title and a type", parse_mode=telegram.ParseMode.HTML)
+        return
+    content_title = " ".join(context.args[0:len(context.args)-1])
+    content_type = context.args[len(context.args)-1]
+    add_content_to_spreadsheet(content_title, content_type, update.message.from_user['username'], "In Progress")
+    context.bot.send_message(chat_id=update.effective_chat.id, text="I added it to the queue", parse_mode=telegram.ParseMode.HTML)

@@ -49,5 +49,8 @@ def main():
     my_progress_handler = CommandHandler('myprogress', consumption.handle_my_progress)
     dispatcher.add_handler(my_progress_handler)
 
+    add_content_handler = CommandHandler("add", consumption.handle_add_content)
+    dispatcher.add_handler(add_content_handler)
+
     updater.start_polling()
 main()
