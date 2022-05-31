@@ -121,12 +121,14 @@ def add_content_to_spreadsheet(content_title, content_type, telegram_username, s
     creds = ServiceAccountCredentials.from_json_keyfile_dict(generate_google_creds_dict(), scope)
     client = gspread.authorize(creds)
     name_on_sheet = get_name_by_telegram_user(telegram_username, client)
+    suitable_content_types_without_icon = ["Movie", "Series", "Anime", "Novel", "Game", "Manga"]
     suitable_content_types = ["📽️ Movie", "📺 Series", "🇯🇵 Anime", "📚 Novel", "🎮 Game", "📃 Manga"]
-    if (content_type not in suitable_content_types):
+    if (content_type not in suitable_content_types_without_icon):
         return
+    content_type_with_icon = suitable_content_types[suitable_content_types_without_icon.index(content_type)]
 
     shows_list_worksheet = client.open_by_key(get_key_for_spreadsheet()).worksheet("Consumption Queue")
-    shows_list_worksheet.append_row([content_title, content_type, name_on_sheet, status, status, "No", "No", "No", "No"])
+    shows_list_worksheet.append_row([content_title, content_type_with_icon, name_on_sheet, status, status, "No", "No", "No", "No"])
 
 
 def handle_my_progress(update, context):
