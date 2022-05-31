@@ -121,7 +121,7 @@ def add_content_to_spreadsheet(content_title, content_type, telegram_username, s
     creds = ServiceAccountCredentials.from_json_keyfile_dict(generate_google_creds_dict(), scope)
     client = gspread.authorize(creds)
     name_on_sheet = get_name_by_telegram_user(telegram_username, client)
-    suitable_content_types = ["Movie", "Series", "Anime", "Novel", "Game", "Manga"]
+    suitable_content_types = ["📽️ Movie", "📺 Series", "🇯🇵 Anime", "📚 Novel", "🎮 Game", "📃 Manga"]
     if (content_type not in suitable_content_types):
         return
 
