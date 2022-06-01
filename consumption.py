@@ -11,31 +11,28 @@ def get_value_by_user(telegram_username, value):
     name_on_sheet = get_name_by_telegram_user(telegram_username, client)
 
     shows_list_worksheet = client.open_by_key(get_key_for_spreadsheet()).worksheet("Consumption Queue")
-    filtered_records = list({"cell": "","data" : filter(lambda record : (record[name_on_sheet] == value),shows_list_worksheet.get_all_records())})
 
-    # Add cell number to cell json in filtered records
-    for i in range(len(filtered_records)):
-        filtered_records[i]['cell'] = shows_list_worksheet.find(filtered_records[i]['data'][0]['Title']).row
+    # Get all data with row number mapped to all values
+    all_data = shows_list_worksheet.get_all_records()
+    filtered_records = []
+    for index, data in enumerate(all_data):
+        if data[name_on_sheet] == value:
+            filtered_records.append((index+1, data))
 
     unseen_telegram_message = ""
     for filtered_json in filtered_records:
         unseen_telegram_message += record_to_message_format(filtered_json)
     return unseen_telegram_message
 
-def update_user_entry_to_new_value(telegram_username, entry_name, new_value):
+def update_user_entry_to_new_value(telegram_username, new_value, entry_row_number):
     scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
     creds = ServiceAccountCredentials.from_json_keyfile_dict(generate_google_creds_dict(), scope)
     client = gspread.authorize(creds)
     name_on_sheet = get_name_by_telegram_user(telegram_username, client)
 
     shows_list_worksheet = client.open_by_key(get_key_for_spreadsheet()).worksheet("Consumption Queue")
-    cell_with_entry_name = shows_list_worksheet.find(entry_name)
     user_col = shows_list_worksheet.find(name_on_sheet).col
-
-    if cell_with_entry_name:
-        shows_list_worksheet.update_cell(cell_with_entry_name.row, user_col, new_value)
-
-    return cell_with_entry_name
+    return shows_list_worksheet.update_cell(entry_row_number + 1, user_col, new_value)
 
 def generate_google_creds_dict():
     variables_keys = {
@@ -71,7 +68,7 @@ def get_name_by_telegram_user(telegram_username, client):
     return next(filtered_name_dict)['name']
 
 def record_to_message_format(json_record):
-    return json_record["cell"] + " <code>" + json_record["data"]['Type'].split(" ")[0] + " " + json_record["data"]['Title'] + "</code>" + "\n"
+    return str(json_record[0]) + " <code>" + json_record[1]['Type'].split(" ")[0] + " " + json_record[1]['Title'] + "</code>" + "\n"
 
 def get_key_for_spreadsheet():
     key = os.getenv('SPREADSHEET_KEY')
@@ -84,39 +81,25 @@ def handle_unseen(update, context):
     context.bot.send_message(chat_id=update.effective_chat.id, text=relevant_shows_to_user, parse_mode=telegram.ParseMode.HTML)
 
 def handle_seen(update, context):
-    entry_name = ""
-    if (len(context.args) > 0):
-        entry_name += " ".join(context.args)
-    telegram_user = update.message.from_user['username']
-    if (update_user_entry_to_new_value(telegram_username=telegram_user, entry_name=entry_name, new_value="Yes")):
-        context.bot.send_message(chat_id=update.effective_chat.id, text="I updated it, be grateful", parse_mode=telegram.ParseMode.HTML)
-    else:
-        context.bot.send_message(chat_id=update.effective_chat.id, text="Wow you suck, I couldn't find: {}, prepare to be cussed!".format(entry_name), parse_mode=telegram.ParseMode.HTML)
-        context.args = list(telegram_user)
-        cuss.cuss(update, context)
+    extract_cell_number_and_update(update, context, "Yes")
 
 def handle_not_interested(update, context):
-    entry_name = ""
-    if (len(context.args) > 0):
-        entry_name += " ".join(context.args)
-    telegram_user = update.message.from_user['username']
-    if (update_user_entry_to_new_value(telegram_username=telegram_user, entry_name=entry_name, new_value="Not Interested")):
-        context.bot.send_message(chat_id=update.effective_chat.id, text="I updated it, be grateful", parse_mode=telegram.ParseMode.HTML)
-    else:
-        context.bot.send_message(chat_id=update.effective_chat.id, text="Wow you suck, I couldn't find: {}, prepare to be cussed!".format(entry_name), parse_mode=telegram.ParseMode.HTML)
-        context.args = list(telegram_user)
-        cuss.cuss(update, context)
-
+    extract_cell_number_and_update(update, context, "Not Interested")
 
 def handle_in_progress(update, context):
-    entry_name = ""
+    extract_cell_number_and_update(update, context, "In Progress")
+
+def extract_cell_number_and_update(update, context, new_value):
+    entry_row_string = ""
+    entry_row_number= -1
     if (len(context.args) > 0):
-        entry_name += " ".join(context.args)
+        entry_row_string += "".join(context.args)
+        entry_row_number = int(entry_row_string)
     telegram_user = update.message.from_user['username']
-    if (update_user_entry_to_new_value(telegram_username=telegram_user, entry_name=entry_name, new_value="In Progress")):
+    if (update_user_entry_to_new_value(telegram_username=telegram_user, entry_row_number= entry_row_number, new_value=new_value)):
         context.bot.send_message(chat_id=update.effective_chat.id, text="I updated it, be grateful", parse_mode=telegram.ParseMode.HTML)
     else:
-        context.bot.send_message(chat_id=update.effective_chat.id, text="Wow you suck, I couldn't find: {}, prepare to be cussed!".format(entry_name), parse_mode=telegram.ParseMode.HTML)
+        context.bot.send_message(chat_id=update.effective_chat.id, text="Wow you suck, I couldn't find anything for number: {}, prepare to be cussed!".format(entry_row_number), parse_mode=telegram.ParseMode.HTML)
         context.args = list(telegram_user)
         cuss.cuss(update, context)
 

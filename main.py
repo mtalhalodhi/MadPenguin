@@ -37,13 +37,13 @@ def main():
     own_handler = CommandHandler('own', own.own_bot_command)
     dispatcher.add_handler(own_handler)
 
-    mark_seen_sheet_handler = CommandHandler('seen',  consumption.handle_seen)
+    mark_seen_sheet_handler = CommandHandler('setseen',  consumption.handle_seen)
     dispatcher.add_handler(mark_seen_sheet_handler)
 
-    mark_not_interested_handler = CommandHandler('notinterested', consumption.handle_not_interested)
+    mark_not_interested_handler = CommandHandler('setnotinterested', consumption.handle_not_interested)
     dispatcher.add_handler(mark_not_interested_handler)
 
-    mark_in_progress_handler = CommandHandler('inprogress', consumption.handle_in_progress)
+    mark_in_progress_handler = CommandHandler('setinprogress', consumption.handle_in_progress)
     dispatcher.add_handler(mark_in_progress_handler)
 
     my_progress_handler = CommandHandler('myprogress', consumption.handle_my_progress)
