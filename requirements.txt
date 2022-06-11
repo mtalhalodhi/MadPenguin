@@ -3,3 +3,4 @@ python-dotenv
 python-telegram-bot
 gspread
 oauth2client
+beautifulsoup4
