@@ -3,6 +3,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 import telegram
 import os
 import cuss
+import steam_scraper
 
 def get_value_by_user(telegram_username, value):
     scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
@@ -130,3 +131,18 @@ def handle_add_content(update, context):
     content_type = context.args[len(context.args)-1]
     add_content_to_spreadsheet(content_title, content_type, update.message.from_user['username'], "In Progress")
     context.bot.send_message(chat_id=update.effective_chat.id, text="I added it to the queue", parse_mode=telegram.ParseMode.HTML)
+
+def handle_release_date(update, context):
+    entry_row_string = ""
+    entry_row_number= -1
+    if (len(context.args) > 0):
+        entry_row_string += "".join(context.args)
+        entry_row_number = int(entry_row_string)
+    entry_col_number = 1 # This is the Title column and in spreadsheet it is the first one
+    scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
+    creds = ServiceAccountCredentials.from_json_keyfile_dict(generate_google_creds_dict(), scope)
+    client = gspread.authorize(creds)
+    shows_list_worksheet = client.open_by_key(get_key_for_spreadsheet()).worksheet("Consumption Queue")
+    game_title = shows_list_worksheet.cell(entry_row_number+1, entry_col_number).value
+    game_release_date = steam_scraper.get_release_date_for_game_from_steam(game_title)
+    context.bot.send_message(chat_id=update.effective_chat.id, text="The release date for {} is {}".format(game_title, game_release_date), parse_mode=telegram.ParseMode.HTML)

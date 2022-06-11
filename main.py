@@ -52,5 +52,8 @@ def main():
     add_content_handler = CommandHandler("add", consumption.handle_add_content)
     dispatcher.add_handler(add_content_handler)
 
+    get_release_date_handler = CommandHandler("releasedate", consumption.handle_release_date)
+    dispatcher.add_handler(get_release_date_handler)
+
     updater.start_polling()
 main()
