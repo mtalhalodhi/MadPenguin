@@ -4,13 +4,13 @@ import os
 import pandas
 import dotenv
 import logging
-from setuptools import Command
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 from oauth2client.service_account import ServiceAccountCredentials
 
 import cuss
 import consumption
 import own
+import dalle
 
 def main():
     dotenv.load_dotenv()
@@ -54,6 +54,9 @@ def main():
 
     get_release_date_handler = CommandHandler("releasedate", consumption.handle_release_date)
     dispatcher.add_handler(get_release_date_handler)
+
+    get_image_prompt_dalle_handler = CommandHandler("imageprompt", dalle.generate_image_from_prompt)
+    dispatcher.add_handler(get_image_prompt_dalle_handler)
 
     updater.start_polling()
 main()
