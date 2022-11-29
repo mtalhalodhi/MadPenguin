@@ -2,7 +2,7 @@ import openai
 import telegram
 
 def get_image_url_from_prompt(prompt):
-    openai.api_key='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'
+    openai.api_key='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'
 
     image_resp = openai.Image.create(prompt=prompt, n=4, size="512x512")
 
