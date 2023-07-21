@@ -65,8 +65,8 @@ def generate_google_creds_dict():
 
 def get_name_by_telegram_user(telegram_username, client):
     user_mapping_worksheet =  client.open_by_key(get_key_for_spreadsheet()).worksheet("Telegram Mapping")
-    filtered_name_dict = filter(lambda user_json : (user_json['username'] == telegram_username), user_mapping_worksheet.get_all_records())
-    return next(filtered_name_dict)['name']
+    filtered_name_dict = filter(lambda user_json : (user_json['Username'] == telegram_username), user_mapping_worksheet.get_all_records())
+    return next(filtered_name_dict)['Name']
 
 def record_to_message_format(json_record):
     return str(json_record[0]) + " <code>" + json_record[1]['Type'].split(" ")[0] + " " + json_record[1]['Title'] + "</code>" + "\n"
