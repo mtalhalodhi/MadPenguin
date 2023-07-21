@@ -1,6 +1,6 @@
 pandas
 python-dotenv
-python-telegram-bot
+python-telegram-bot==20.0
 gspread
 oauth2client
 beautifulsoup4
